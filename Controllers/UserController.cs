@@ -39,7 +39,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("GetUserByID")]
+    [HttpGet("GetUserById")]
     public async Task<ActionResult<UserDTO>> GetUserById(int Id)
     {
         UserDTO User = await DBContext.User.Select(s => new UserDTO
