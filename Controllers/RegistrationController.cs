@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using database_api.Data;
 
-namespace CRUDOperationUsingWEBAPI.Controllers
+namespace database_api.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
@@ -227,6 +227,10 @@ namespace CRUDOperationUsingWEBAPI.Controllers
         [HttpPost("RegisterUser")]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO registerUserDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var userToBeCreated = new Users
             {
@@ -257,7 +261,8 @@ namespace CRUDOperationUsingWEBAPI.Controllers
             }
             else
             {
-                return ErrorResponse.ReturnErrorResponse(response.Errors?.ToString() ?? "");
+                var errorDetails = string.Join(", ", response.Errors.Select(error => $"{error.Code}: {error.Description}"));
+                return BadRequest(errorDetails);
             }
         }
 
@@ -272,16 +277,16 @@ namespace CRUDOperationUsingWEBAPI.Controllers
             return uploadsFolder;
         }
 
-        [HttpDelete("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(DeleteUserDTO userDetails)
+        /*[HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
+            var existingUser = await _userManager.FindByIdAsync(id);
 
-            var existingUser = await _userManager.FindByEmailAsync(userDetails.Email);
             if (existingUser != null)
             {
-                var response = await _userManager.DeleteAsync(existingUser);
+                var result = await _userManager.DeleteAsync(existingUser);
 
-                if (response.Succeeded)
+                if (result.Succeeded)
                 {
                     return Ok(new MainResponse
                     {
@@ -290,13 +295,13 @@ namespace CRUDOperationUsingWEBAPI.Controllers
                 }
                 else
                 {
-                    return ErrorResponse.ReturnErrorResponse(response.Errors?.ToString() ?? "");
+                    return ErrorResponse.ReturnErrorResponse(result.Errors?.ToString() ?? "");
                 }
             }
             else
             {
-                return ErrorResponse.ReturnErrorResponse("No User found with this email");
+                return ErrorResponse.ReturnErrorResponse("No User found with this ID");
             }
-        }
+        }*/
     }
 }

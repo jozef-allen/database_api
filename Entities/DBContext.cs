@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using database_api.Data;
+using database_api.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -16,8 +18,8 @@ namespace database_api.Entities
         {
         }
 
+        public virtual DbSet<Users> Users { get; set; } = null!;
         public virtual DbSet<User> User { get; set; } = null!;
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }

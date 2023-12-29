@@ -1,8 +1,12 @@
+using database_api.Data;
 using database_api.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore; // Add this line
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MySql.EntityFrameworkCore.Extensions;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +19,35 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
 });
 
-builder.Services.AddEntityFrameworkMySQL().AddDbContext<DBContext>(options =>
+builder.Services.AddDbContext<DBContext>(options =>
 {
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 2, 0)));
 });
+
+builder.Services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<DBContext>();
+
+builder.Services.AddAuthentication(f =>
+{
+    f.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    f.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(k =>
+{
+    var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
+    k.SaveToken = true;
+    k.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Key),
+        ClockSkew = TimeSpan.Zero
+    };
+
+});
+
 
 // Enable CORS
 builder.Services.AddCors(options =>
