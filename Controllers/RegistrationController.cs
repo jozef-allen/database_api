@@ -126,6 +126,7 @@ namespace database_api.Controllers
 
         }
 
+
         //[AllowAnonymous]
         //[HttpPost("AuthenticateUser")]
         //public async Task<IActionResult> AuthenticateUser(AuthenticateUser authenticateUser)
@@ -216,7 +217,7 @@ namespace database_api.Controllers
             {
                 Audience = _configuration["JWT:Audience"],
                 Issuer = _configuration["JWT:Issuer"],
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddSeconds(5),
                 Subject = new ClaimsIdentity(claims),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyDetail), SecurityAlgorithms.HmacSha256Signature)
             };
