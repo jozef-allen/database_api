@@ -126,7 +126,43 @@ namespace database_api.Controllers
 
         }
 
+        //[AllowAnonymous]
+        //[HttpPost("AuthenticateUser")]
+        //public async Task<IActionResult> AuthenticateUser(AuthenticateUser authenticateUser)
+        //{
+        //    var user = await _userManager.FindByNameAsync(authenticateUser.UserName);
+        //    if (user == null) return Unauthorized();
 
+        //    bool isValidUser = await _userManager.CheckPasswordAsync(user, authenticateUser.Password);
+
+        //    if (isValidUser)
+        //    {
+        //        var tokenHandler = new JwtSecurityTokenHandler();
+
+        //        var keyDetail = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+
+        //        var claims = new List<Claim>
+        //        {
+        //            new Claim(ClaimTypes.NameIdentifier, user.Id),
+        //            new Claim(ClaimTypes.Name, $"{ user.FirstName} { user.LastName}"),
+        //        };
+
+        //        var tokenDescriptor = new SecurityTokenDescriptor
+        //        {
+        //            Audience = _configuration["JWT:Audience"],
+        //            Issuer = _configuration["JWT:Issuer"],
+        //            Expires = DateTime.UtcNow.AddDays(5),
+        //            Subject = new ClaimsIdentity(claims),
+        //            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyDetail), SecurityAlgorithms.HmacSha256Signature)
+        //        };
+        //        var token = tokenHandler.CreateToken(tokenDescriptor);
+        //        return Ok(tokenHandler.WriteToken(token));
+        //    }
+        //    else
+        //    {
+        //        return Unauthorized();
+        //    }
+        //}
 
         [AllowAnonymous]
         [HttpPost("AuthenticateUser")]
@@ -174,7 +210,6 @@ namespace database_api.Controllers
                     new Claim(ClaimTypes.Name, $"{user.FirstName} { user.LastName}"),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim("UserAvatar", $"{user.UserAvatar}"),
-
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -188,6 +223,7 @@ namespace database_api.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -214,7 +250,6 @@ namespace database_api.Controllers
 
         private string GenerateRefreshToken()
         {
-
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
             {
