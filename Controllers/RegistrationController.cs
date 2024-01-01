@@ -80,6 +80,7 @@ namespace database_api.Controllers
 
         }
 
+        // generates both tokens
         [AllowAnonymous]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
@@ -165,6 +166,7 @@ namespace database_api.Controllers
         //    }
         //}
 
+        // also generates both tokens
         [AllowAnonymous]
         [HttpPost("AuthenticateUser")]
         public async Task<IActionResult> AuthenticateUser(AuthenticateUser authenticateUser)
