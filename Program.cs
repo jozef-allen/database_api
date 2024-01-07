@@ -2,17 +2,18 @@ using database_api.Data;
 using database_api.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; // Add this line
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -45,16 +46,14 @@ builder.Services.AddAuthentication(f =>
         IssuerSigningKey = new SymmetricSecurityKey(Key),
         ClockSkew = TimeSpan.Zero
     };
-
 });
-
 
 // Enable CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.WithOrigins("http://10.0.2.2")
+        builder.WithOrigins("http://10.0.2.2", "http://192.168.0.11") // Add your machine's IP address
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
@@ -69,7 +68,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API v1"));
 }
 
-//app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseCors("AllowAll"); // Use CORS before routing and endpoints
 

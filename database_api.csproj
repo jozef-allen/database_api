@@ -19,4 +19,11 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="wwwroot\Images\0d8efc5f-9af1-4160-9454-44c9393ec314_Mistry_Pragnesh.jpeg" />
+	  <None Include="wwwroot\Images\71d6354c-ca5f-4da1-8f9e-e660ef471e58_J_J.jpeg" />
+	  <None Include="wwwroot\Images\b30965a2-9aa8-4e0e-bbbd-a0b93fa6490a_Joe_That.jpeg" />
+	  <None Include="wwwroot\Images\placeholder.txt" />
+	</ItemGroup>
+
 </Project>
