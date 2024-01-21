@@ -306,13 +306,21 @@ namespace database_api.Controllers
 
         private async Task<string> UploadFile(byte[] bytes, string fileName)
         {
-            string uploadsFolder = Path.Combine("Images", fileName);
-            Stream stream = new MemoryStream(bytes);
-            using (var ms = new FileStream(uploadsFolder, FileMode.Create))
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+            string filePath = Path.Combine(uploadsFolder, fileName);
+
+            // Ensure the directory exists
+            if (!Directory.Exists(uploadsFolder))
             {
-                await stream.CopyToAsync(ms);
+                Directory.CreateDirectory(uploadsFolder);
             }
-            return uploadsFolder;
+
+            using (var fs = new FileStream(filePath, FileMode.Create))
+            {
+                await fs.WriteAsync(bytes, 0, bytes.Length);
+            }
+
+            return filePath;
         }
 
         /*[HttpDelete("{id}")]
